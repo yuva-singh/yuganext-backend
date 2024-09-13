@@ -46,9 +46,11 @@ const registerTeacher = asyncHandler(async (req, res) => {
 
   const aadharImg = req.files["aadharImg"][0].path;
 
-  const specializationIds = specialization.map((id) =>
-    mongoose.Types.ObjectId(id)
-  );
+  const specializationArray = Array.isArray(specialization)
+    ? specialization
+    : [specialization];
+
+  const specializationIds = specializationArray.map((id) => id);
 
   const bcryptedPassword = await bcrypt.hash(password, 10);
 
@@ -142,9 +144,11 @@ const updateTeacher = asyncHandler(async (req, res) => {
     description = teacher.description,
   } = req.body;
 
-  const specializationIds = specialization.map((id) =>
-    mongoose.Types.ObjectId(id)
-  );
+  const specializationArray = Array.isArray(specialization)
+    ? specialization
+    : [specialization];
+
+  const specializationIds = specializationArray.map((id) => id);
 
   const updatedTeacherEntry = await Teacher.findByIdAndUpdate(
     teacherId,
