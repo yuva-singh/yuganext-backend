@@ -20,7 +20,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
 
   const adminCount = await Admin.countDocuments();
 
-  if (adminCount >= 1) {
+  if (adminCount >= 2) {
     return res
       .status(403)
       .json({ message: "Cannot create more than 1 admin!" });
