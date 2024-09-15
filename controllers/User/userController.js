@@ -114,7 +114,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
   if (!updatedUserEntry) {
     res.status(500);
-    throw new Error({ message: "server error!" });
+    throw new Error("server error!");
   }
 
   res.status(200).json({

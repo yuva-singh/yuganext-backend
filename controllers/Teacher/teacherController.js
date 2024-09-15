@@ -68,7 +68,7 @@ const registerTeacher = asyncHandler(async (req, res) => {
 
   if (!teacherEntry) {
     res.status(500);
-    throw new Error({ message: "server error!" });
+    throw new Error("server error!");
   }
 
   res.status(201).json({
@@ -99,7 +99,7 @@ const loginTeacher = asyncHandler(async (req, res) => {
 
   if (!teacher) {
     res.status(401);
-    throw new Error({ message: "Invalid email or password!" });
+    throw new Error("Invalid email or password!");
   }
 
   const isPasswordMatch = await bcrypt.compare(password, teacher.password);
@@ -168,7 +168,7 @@ const updateTeacher = asyncHandler(async (req, res) => {
 
   if (!updatedTeacherEntry) {
     res.status(500);
-    throw new Error({ message: "server error!" });
+    throw new Error("server error!");
   }
 
   res.status(200).json({
