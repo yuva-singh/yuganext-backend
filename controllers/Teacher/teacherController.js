@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { Teacher } = require("../../models/Teacher/teacherModel");
@@ -106,7 +105,7 @@ const loginTeacher = asyncHandler(async (req, res) => {
 
   if (!isPasswordMatch) {
     res.status(401);
-    throw new Error({ message: "Invalid email or password!" });
+    throw new Error("Invalid email or password!");
   }
 
   const accessToken = jwt.sign(
