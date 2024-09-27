@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { HealthCategory } = require("../../models/Teacher/healthCategoryModel");
+const { Teacher } = require("../../models/Teacher/teacherModel");
 
 const createHealthCategory = asyncHandler(async (req, res) => {
   const { name } = req.body;
@@ -65,8 +66,30 @@ const getAllHealthCategory = asyncHandler(async (req, res) => {
   res.status(200).json(categoryEntries);
 });
 
+const deleteHealthCategory = asyncHandler(async (req, res) => {
+  const categoryId = req.params.id;
+
+  const teachers = await Teacher.findOne({ specialization: categoryId });
+
+  if (teachers.length > 0) {
+    res.status(400);
+    throw new Error(
+      "You have existing teachers with this category. Please delete teachers with this category before deleting the category."
+    );
+  }
+  const categoryEntries = await HealthCategory.findByIdAndDelete(categoryId);
+
+  if (!categoryEntries) {
+    res.status(500);
+    throw new Error("server error!");
+  }
+
+  res.status(200).json({ message: "Category deleted successfully!" });
+});
+
 module.exports = {
   createHealthCategory,
   updateHealthCategory,
   getAllHealthCategory,
+  deleteHealthCategory,
 };
