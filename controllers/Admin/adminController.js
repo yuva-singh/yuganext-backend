@@ -2,6 +2,12 @@ const asyncHandler = require("express-async-handler");
 const Admin = require("../../models/Admin/adminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { Booking, BookingHistory } = require("../../models/User/bookingModel");
+const { User } = require("../../models/User/userModel");
+const { Teacher } = require("../../models/Teacher/teacherModel");
+const { Blog } = require("../../models/Admin/blogModel");
+const Contact = require("../../models/Admin/contactModel");
+const { HealthCategory } = require("../../models/Teacher/healthCategoryModel");
 
 const registerAdmin = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -73,7 +79,28 @@ const loginAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+const getTotalCounts = asyncHandler(async (req, res) => {
+  const teachers = await Teacher.countDocuments();
+  const users = await User.countDocuments();
+  const bookings = await Booking.countDocuments();
+  const blogs = await Blog.countDocuments();
+  const contacts = await Contact.countDocuments();
+  const services = await HealthCategory.countDocuments();
+  const bookingHistory = await BookingHistory.countDocuments();
+
+  res.status(200).json({
+    totalUsers: users,
+    totalTeachers: teachers,
+    totalBookings: bookings,
+    totalBlogs: blogs,
+    totalContacts: contacts,
+    totalServices: services,
+    totalBookingHistorys: bookingHistory,
+  });
+});
+
 module.exports = {
   registerAdmin,
   loginAdmin,
+  getTotalCounts,
 };
