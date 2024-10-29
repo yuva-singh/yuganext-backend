@@ -17,13 +17,15 @@ const bookingSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Teacher",
     },
-    isAssigned: {
-      type: Boolean,
-      default: false,
-    },
-    isCompleted: {
-      type: Boolean,
-      default: false,
+    bookingStatus: {
+      status: {
+        type: String,
+        enum: ["Pending", "Confirm", "Cancel", "Completed"],
+        default: "Pending",
+      },
+      reason: {
+        type: String,
+      },
     },
   },
   {
@@ -36,6 +38,9 @@ const bookingHistorySchema = mongoose.Schema(
     specialization: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "HealthCategory",
+    },
+    status: {
+      type: String,
     },
     userData: {
       _id: {

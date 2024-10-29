@@ -35,7 +35,9 @@ const assignTeacher = asyncHandler(async (req, res) => {
     bookingId,
     {
       teacherData: teacherId,
-      isAssigned: true,
+      bookingStatus: {
+        status: "Confirm",
+      },
     },
     { new: true }
   );
@@ -50,37 +52,48 @@ const assignTeacher = asyncHandler(async (req, res) => {
     .json({ message: "Teacher assigned successfully!", teacherAssigned });
 });
 
-const completeBooking = asyncHandler(async (req, res) => {
+const updateBookingStatus = asyncHandler(async (req, res) => {
   const bookingId = req.params.id;
 
-  const complete = await Booking.findByIdAndUpdate(
+  const { bookingStatus, reason } = req.body;
+
+  const status = await Booking.findByIdAndUpdate(
     bookingId,
-    { isCompleted: true },
+    {
+      bookingStatus: {
+        status: bookingStatus,
+        reason: reason,
+      },
+    },
     { new: true }
   ).populate("specialization userData teacherData");
 
-  if (!complete) {
+  if (!status) {
     res.status(404);
     throw new Error("Booking not found!");
   }
 
-  await BookingHistory.create({
-    specialization: complete.specialization._id,
-    userData: {
-      _id: complete.userData._id,
-      name: complete.userData.name,
-      gender: complete.userData.gender,
-      age: complete.userData.age,
-    },
-    teacherData: {
-      _id: complete.teacherData._id,
-      name: complete.teacherData.name,
-      age: complete.teacherData.age,
-    },
-  });
+  if (bookingStatus === "Completed" || bookingStatus === "Cancel") {
+    await BookingHistory.create({
+      specialization: status.specialization._id,
+      status: bookingStatus,
+      userData: {
+        _id: status.userData._id,
+        name: status.userData.name,
+        gender: status.userData.gender,
+        age: status.userData.age,
+      },
+      teacherData: {
+        _id: status.teacherData._id,
+        name: status.teacherData.name,
+        age: status.teacherData.age,
+      },
+    });
+  }
 
   res.status(200).json({
-    message: "Booking Completed successfully!",
+    message: "Booking Status Changed successfully!",
+    status,
   });
 });
 
@@ -97,6 +110,17 @@ const getBookingsByTeacher = asyncHandler(async (req, res) => {
   const teacherId = req.params.id;
 
   const bookings = await Booking.find({ teacherData: teacherId })
+    .populate("specialization", "name")
+    .populate("userData", "name phone gender age address")
+    .populate("teacherData", "name phone age address");
+
+  res.status(200).json(bookings);
+});
+
+const getBookingsByUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const bookings = await Booking.find({ userData: userId })
     .populate("specialization", "name")
     .populate("userData", "name phone gender age address")
     .populate("teacherData", "name phone age address");
@@ -137,10 +161,11 @@ const getBookingHistoryForTeacher = asyncHandler(async (req, res) => {
 module.exports = {
   bookService,
   assignTeacher,
-  completeBooking,
+  updateBookingStatus,
   getBookings,
   getBookingHistoryForAdmin,
   getBookingHistoryForUser,
   getBookingHistoryForTeacher,
   getBookingsByTeacher,
+  getBookingsByUser,
 };
