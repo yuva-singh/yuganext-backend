@@ -118,7 +118,11 @@ const loginTeacher = asyncHandler(async (req, res) => {
     { expiresIn: "90d" }
   );
 
-  res.status(200).json({ message: "Loggedin successfully!", accessToken });
+  res.status(200).json({
+    message: "Loggedin successfully!",
+    accessToken,
+    teacherId: teacher._id,
+  });
 });
 
 const updateTeacher = asyncHandler(async (req, res) => {
@@ -139,7 +143,10 @@ const updateTeacher = asyncHandler(async (req, res) => {
     experience = teacher.experience,
     address = teacher.address,
     slot = teacher.slot,
-    socialHandle = teacher.socialHandle,
+    youtube = teacher.youtube,
+    instagram = teacher.instagram,
+    x = teacher.x,
+    facebook = teacher.facebook,
     description = teacher.description,
   } = req.body;
 
@@ -159,7 +166,10 @@ const updateTeacher = asyncHandler(async (req, res) => {
       experience,
       address,
       slot,
-      socialHandle,
+      youtube,
+      instagram,
+      x,
+      facebook,
       description,
     },
     { new: true }
@@ -178,6 +188,7 @@ const updateTeacher = asyncHandler(async (req, res) => {
 
 const getAllTeachers = asyncHandler(async (req, res) => {
   const teacherEntrys = await Teacher.find()
+    .populate("specialization", "name")
     .select("-password")
     .sort({ createdAt: -1 });
 
@@ -192,7 +203,9 @@ const getAllTeachers = asyncHandler(async (req, res) => {
 const getSingleTeacher = asyncHandler(async (req, res) => {
   const teacherId = req.params.id;
 
-  const teacherEntry = await Teacher.findById(teacherId).select("-password");
+  const teacherEntry = await Teacher.findById(teacherId)
+    .populate("specialization", "name")
+    .select("-password");
 
   if (!teacherEntry) {
     res.status(404);

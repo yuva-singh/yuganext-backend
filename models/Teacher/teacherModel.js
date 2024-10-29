@@ -34,7 +34,16 @@ const teacherSchema = mongoose.Schema(
       type: [String],
       default: [],
     },
-    socialHandle: {
+    youtube: {
+      type: String,
+    },
+    instagram: {
+      type: String,
+    },
+    x: {
+      type: String,
+    },
+    facebook: {
       type: String,
     },
     description: {

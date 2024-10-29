@@ -86,6 +86,18 @@ const completeBooking = asyncHandler(async (req, res) => {
 
 const getBookings = asyncHandler(async (req, res) => {
   const bookings = await Booking.find({})
+    .populate("specialization", "name")
+    .populate("userData", "name phone gender age address")
+    .populate("teacherData", "name phone age address");
+
+  res.status(200).json(bookings);
+});
+
+const getBookingsByTeacher = asyncHandler(async (req, res) => {
+  const teacherId = req.params.id;
+
+  const bookings = await Booking.find({ teacherData: teacherId })
+    .populate("specialization", "name")
     .populate("userData", "name phone gender age address")
     .populate("teacherData", "name phone age address");
 
@@ -130,4 +142,5 @@ module.exports = {
   getBookingHistoryForAdmin,
   getBookingHistoryForUser,
   getBookingHistoryForTeacher,
+  getBookingsByTeacher,
 };

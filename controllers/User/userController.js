@@ -77,7 +77,9 @@ const loginUser = asyncHandler(async (req, res) => {
     { expiresIn: "90d" }
   );
 
-  res.status(200).json({ message: "Loggedin successfully!", accessToken });
+  res
+    .status(200)
+    .json({ message: "Loggedin successfully!", accessToken, userId: user._id });
 });
 
 const updateUser = asyncHandler(async (req, res) => {
