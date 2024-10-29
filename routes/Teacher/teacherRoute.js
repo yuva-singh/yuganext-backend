@@ -6,6 +6,7 @@ const {
   getSingleTeacher,
   deleteTeacher,
   updateTeacher,
+  getTotalCounts,
 } = require("../../controllers/Teacher/teacherController");
 const uploadToCloudinary = require("../../middleware/uploadToCloudnary");
 
@@ -20,6 +21,7 @@ router.post("/login", loginTeacher);
 router.put("/update/:id", updateTeacher);
 router.get("/all", getAllTeachers);
 router.get("/single/:id", getSingleTeacher);
+router.get("/total/:id", getTotalCounts);
 router.delete("/delete/:id", deleteTeacher);
 
 module.exports = router;

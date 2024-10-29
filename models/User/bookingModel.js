@@ -42,6 +42,9 @@ const bookingHistorySchema = mongoose.Schema(
     status: {
       type: String,
     },
+    slot: {
+      type: String,
+    },
     userData: {
       _id: {
         type: mongoose.Schema.Types.ObjectId,

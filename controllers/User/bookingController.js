@@ -77,6 +77,7 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
     await BookingHistory.create({
       specialization: status.specialization._id,
       status: bookingStatus,
+      status: status.slot,
       userData: {
         _id: status.userData._id,
         name: status.userData.name,

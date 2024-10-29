@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { Teacher } = require("../../models/Teacher/teacherModel");
+const { Booking } = require("../../models/User/bookingModel");
 
 const registerTeacher = asyncHandler(async (req, res) => {
   const {
@@ -173,7 +174,7 @@ const updateTeacher = asyncHandler(async (req, res) => {
       description,
     },
     { new: true }
-  );
+  ).populate("specialization", "name");
 
   if (!updatedTeacherEntry) {
     res.status(500);
@@ -228,6 +229,15 @@ const deleteTeacher = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Teacher deleted successfully!" });
 });
 
+const getTotalCounts = asyncHandler(async (req, res) => {
+  const teacherId = req.params.id;
+  const bookings = await Booking.countDocuments({ teacherData: teacherId });
+
+  res.status(200).json({
+    totalBookings: bookings,
+  });
+});
+
 module.exports = {
   registerTeacher,
   loginTeacher,
@@ -235,4 +245,5 @@ module.exports = {
   getAllTeachers,
   getSingleTeacher,
   deleteTeacher,
+  getTotalCounts,
 };
