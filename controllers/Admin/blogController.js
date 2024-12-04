@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { Blog, Img } = require("../../models/Admin/blogModel");
 
 const createBlog = asyncHandler(async (req, res) => {
-  const {
+  let {
     blogTitle,
     slugUrl,
     metaTitle,
@@ -23,6 +23,8 @@ const createBlog = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields Required!");
   }
+
+  slugUrl = slugUrl.replace(/\s+/g, "_");
 
   const image = req.files["image"] ? req.files["image"][0].path : null;
 
@@ -45,7 +47,7 @@ const createBlog = asyncHandler(async (req, res) => {
 });
 
 const updateBlog = asyncHandler(async (req, res) => {
-  const {
+  let {
     blogTitle,
     slugUrl,
     metaTitle,
@@ -67,6 +69,7 @@ const updateBlog = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields Required!");
   }
+  slugUrl = slugUrl.replace(/\s+/g, "_");
 
   const image = req.files["image"] ? req.files["image"][0].path : null;
   const blogImage = await Blog.findById(blogId);
@@ -166,9 +169,13 @@ const updateBlogStatus = asyncHandler(async (req, res) => {
     throw new Error("All fields required!");
   }
 
-  const blog = await Blog.findByIdAndUpdate(blogId, {
-    status,
-  }, { new: true });
+  const blog = await Blog.findByIdAndUpdate(
+    blogId,
+    {
+      status,
+    },
+    { new: true }
+  );
 
   if (!blog) {
     res.status(404);
