@@ -24,7 +24,7 @@ const createBlog = asyncHandler(async (req, res) => {
     throw new Error("All fields Required!");
   }
 
-  slugUrl = slugUrl.replace(/\s+/g, "_");
+  slugUrl = slugUrl.replace(/\s+/g, "-");
 
   const image = req.files["image"] ? req.files["image"][0].path : null;
 
@@ -69,7 +69,7 @@ const updateBlog = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields Required!");
   }
-  slugUrl = slugUrl.replace(/\s+/g, "_");
+  slugUrl = slugUrl.replace(/\s+/g, "-");
 
   const image = req.files["image"] ? req.files["image"][0].path : null;
   const blogImage = await Blog.findById(blogId);
